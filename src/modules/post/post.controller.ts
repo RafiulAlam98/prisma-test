@@ -14,6 +14,7 @@ export const insertPost = async (req: Request, res: Response) => {
   }
 };
 export const getAllPost = async (req: Request, res: Response) => {
+  console.log(req.query);
   const options = req.query;
   try {
     const result = await PostService.getAllPost(options);
