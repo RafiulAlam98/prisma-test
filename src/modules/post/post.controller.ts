@@ -28,8 +28,38 @@ export const getAllPost = async (req: Request, res: Response) => {
     res.send(error);
   }
 };
+export const updatePost = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const data = req.body;
+  try {
+    const result = await PostService.updatePost(id, data);
+    res.send({
+      succcess: true,
+      message: "post updated succcessfully",
+      data: result,
+    });
+  } catch (error) {
+    res.send(error);
+  }
+};
+export const deletePost = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    const result = await PostService.deletePost(id);
+    res.send({
+      succcess: true,
+      message: "post deleted succcessfully",
+      data: result,
+    });
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 export const PostController = {
   insertPost,
   getAllPost,
+  deletePost,
+  updatePost,
 };
