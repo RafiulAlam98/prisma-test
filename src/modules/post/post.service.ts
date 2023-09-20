@@ -16,43 +16,48 @@ const getAllPost = async (options: any) => {
   const { sortBy, sortOrder, searchTerm, page, limit } = options;
   const skip = parseInt(limit) * parseInt(page) - parseInt(limit);
   const take = parseInt(limit);
-  const result = await prisma.post.findMany({
-    skip,
-    take,
-    include: {
-      author: true,
-      category: true,
-    },
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : { createdAt: "desc" },
-    where: {
-      OR: [
-        {
-          title: {
-            contains: searchTerm,
-            mode: "insensitive",
-          },
-          author: {
-            name: {
+
+  return await prisma.$transaction(async (tx) => {
+    const result = await tx.post.findMany({
+      skip,
+      take,
+      include: {
+        author: true,
+        category: true,
+      },
+      orderBy:
+        sortBy && sortOrder
+          ? {
+              [sortBy]: sortOrder,
+            }
+          : { createdAt: "desc" },
+      where: {
+        OR: [
+          {
+            title: {
               contains: searchTerm,
               mode: "insensitive",
             },
-          },
-          category: {
-            name: {
-              contains: searchTerm,
-              mode: "insensitive",
+            author: {
+              name: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            },
+            category: {
+              name: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
             },
           },
-        },
-      ],
-    },
+        ],
+      },
+    });
+    const total = await tx.post.count();
+    return { data: result, total };
   });
-  return result;
+ 
 };
 export const PostService = {
   createPost,

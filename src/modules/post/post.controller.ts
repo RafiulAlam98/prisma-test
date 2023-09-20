@@ -21,7 +21,8 @@ export const getAllPost = async (req: Request, res: Response) => {
     res.send({
       succcess: true,
       message: "post retrieved succcessfully",
-      data: result,
+      data: result.data,
+      total: result.total,
     });
   } catch (error) {
     res.send(error);
